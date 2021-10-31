@@ -1,4 +1,5 @@
 import React from 'react';
+import Todo from './components/Todo';
 
 class App extends React.Component {
   constructor(props) {
@@ -16,11 +17,21 @@ class App extends React.Component {
     console.log('Updated text', this.state.text);
   }
 
-  handleClick = () => {
+  handleSubmit = (event) => {
+    event.preventDefault();
     console.log('Before Clicked', this.state.isClicked);
     this.setState({
-      isClicked : !this.state.isClicked
-    });
+      todos : [...this.state.todos, this.state.text],
+      text: ''
+    })
+  }
+
+  deleteTodo = (index) => {
+    let copyOfTodos = this.state.todos;
+    copyOfTodos.splice(index, 1);
+    this.setState({
+      todos: [...copyOfTodos]
+    })
   }
 
   handleChange = (event) => {
@@ -32,8 +43,19 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <input onChange={this.handleChange} />
-        <button onClick={this.handleClick}>Click Me</button>
+        <ul>
+          {this.state.todos.map((todo, index) => (
+            <Todo 
+              key={index} 
+              index={index} 
+              todo={todo} 
+              deleteTodo={this.deleteTodo} />
+          ))}
+        </ul>
+        <form onSubmit={this.handleSubmit}>
+          <input onChange={this.handleChange} value={this.state.text} />
+          <button type="submit">Click Me</button>
+        </form>
       </div>
     );
   }
